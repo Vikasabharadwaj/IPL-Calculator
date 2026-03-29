@@ -15,7 +15,6 @@
             --accent-hover: #eab308;
             --success: #10b981;
             --danger: #ef4444;
-            --warning: #fb923c; 
             --input-bg: #334155;
             --border-radius: 12px;
             --transition: all 0.2s ease;
@@ -43,8 +42,6 @@
             align-items: start;
         }
 
-        .spacer-left { display: block; }
-
         .calc-card {
             background: var(--card-bg);
             width: 440px;
@@ -55,6 +52,7 @@
             transition: border-color 0.4s ease, box-shadow 0.4s ease;
         }
 
+        /* Card Glow Logic */
         .glow-success { border-color: var(--success) !important; box-shadow: 0 0 20px rgba(16, 185, 129, 0.3); }
         .glow-danger { border-color: var(--danger) !important; box-shadow: 0 0 20px rgba(239, 68, 68, 0.3); }
 
@@ -74,7 +72,7 @@
         header { text-align: center; margin-bottom: 1.2rem; }
         header h1 { font-size: 1.6rem; font-weight: 800; color: var(--accent); text-transform: uppercase; letter-spacing: 1px; }
 
-        .input-group { margin-bottom: 0.8rem; } /* Slightly tighter spacing */
+        .input-group { margin-bottom: 0.8rem; }
         label { display: block; font-size: 0.8rem; font-weight: 600; margin-bottom: 0.4rem; color: var(--text-dim); }
         
         input {
@@ -102,25 +100,24 @@
         .stat-label { font-size: 0.65rem; color: var(--text-dim); text-transform: uppercase; }
         .stat-val { font-size: 1rem; font-weight: 700; color: var(--text-dim); transition: color 0.3s ease; }
 
-        /* THE FIX: Smaller and less congested result box */
+        /* Results Box: Same font size for Profit and Return */
         .profit-box {
-            padding: 1rem;
+            padding: 1.2rem;
             border-radius: 10px;
             text-align: center;
             background: rgba(255, 255, 255, 0.03);
-            font-size: 0.95rem; /* Smaller Font */
-            font-weight: 700;
-            color: var(--text-dim);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
             transition: color 0.3s ease;
-            letter-spacing: 0.3px; /* Extra breathing room */
         }
+
+        .result-line { font-size: 1.1rem; font-weight: 800; transition: color 0.3s ease; }
+        .divider { height: 1px; background: rgba(255, 255, 255, 0.08); width: 50%; margin: 0 auto; }
 
         .history-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; border-bottom: 1px solid var(--input-bg); padding-bottom: 8px; }
         .history-header { font-size: 0.75rem; font-weight: 700; color: var(--accent); text-transform: uppercase; }
-        .history-actions { display: flex; gap: 12px; }
-        .action-btn { font-size: 0.7rem; cursor: pointer; background: none; border: none; font-weight: 700; text-transform: uppercase; }
-        .csv-btn { color: var(--success); }
-        .clear-btn { color: var(--danger); }
+        .clear-btn { font-size: 0.7rem; color: var(--danger); cursor: pointer; background: none; border: none; font-weight: 700; text-transform: uppercase; }
 
         .history-list { overflow-y: auto; flex: 1; padding-right: 5px; }
         .history-item { background: rgba(255, 255, 255, 0.03); padding: 0.8rem; border-radius: 10px; margin-bottom: 0.8rem; border-left: 4px solid var(--accent); font-size: 0.8rem; }
@@ -130,7 +127,6 @@
 
         @media (max-width: 1100px) {
             .main-layout { display: flex; flex-direction: column; align-items: center; }
-            .spacer-left { display: none; }
             .calc-card, .history-panel { width: 100%; max-width: 450px; margin: 0 auto; }
             .history-panel { visibility: visible !important; margin-top: 20px; }
         }
@@ -142,7 +138,7 @@
 <body>
 
     <div class="main-layout">
-        <div class="spacer-left"></div>
+        <div style="display:block"></div>
 
         <div class="calc-card" id="main-card">
             <header><h1>IPL Calculator</h1></header>
@@ -171,8 +167,10 @@
                     <div class="stat-card"><div class="stat-label">Bet Team 2</div><div class="stat-val" id="res-bet2">₹0</div></div>
                 </div>
                 
-                <div id="profit-display" class="profit-box">
-                    Profit: ₹0 (0.00%) Return ₹0
+                <div class="profit-box">
+                    <div id="profit-line" class="result-line">Profit: ₹0</div>
+                    <div class="divider"></div>
+                    <div id="return-line" class="result-line">Return: ₹0</div>
                 </div>
             </div>
         </div>
@@ -180,10 +178,7 @@
         <div class="history-panel" id="history-section">
             <div class="history-top">
                 <span class="history-header">Personal History</span>
-                <div class="history-actions">
-                    <button class="action-btn csv-btn" onclick="exportToCSV()">Export CSV</button>
-                    <button class="action-btn clear-btn" onclick="clearHistory()">Clear All</button>
-                </div>
+                <button class="clear-btn" onclick="clearHistory()">Clear All</button>
             </div>
             <div class="history-list" id="history-list"></div>
         </div>
@@ -203,6 +198,7 @@
 
         window.onload = renderHistory;
 
+        // Navigation
         document.getElementById('totalAmount').addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); document.getElementById('odd1').focus(); } });
         document.getElementById('odd1').addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); document.getElementById('odd2').focus(); } });
         document.getElementById('odd2').addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); calculate(true); } });
@@ -219,38 +215,41 @@
             const card = document.getElementById('main-card');
             const bet1El = document.getElementById('res-bet1');
             const bet2El = document.getElementById('res-bet2');
-            const profitEl = document.getElementById('profit-display');
+            const profitLine = document.getElementById('profit-line');
+            const returnLine = document.getElementById('return-line');
 
             if (!total || !odd1 || !odd2 || total <= 0) {
                 card.classList.remove('glow-success', 'glow-danger');
                 bet1El.innerText = "₹0"; bet2El.innerText = "₹0";
-                profitEl.innerText = "Profit: ₹0 (0.00%) Return ₹0"; profitEl.style.color = "var(--text-dim)";
+                profitLine.innerText = "Profit: ₹0"; profitLine.style.color = "var(--text-dim)";
+                returnLine.innerText = "Return: ₹0"; returnLine.style.color = "var(--text-dim)";
                 return;
             }
 
             const bet1 = (total * odd2) / (odd1 + odd2);
             const bet2 = (total * odd1) / (odd1 + odd2);
             const profit = (bet1 * odd1) - total;
-            const roi = (profit / total) * 100;
             const totalReturn = total + profit;
 
+            // Colors match for both lines
+            const dynamicColor = profit < 0 ? 'var(--danger)' : (profit > 0 ? 'var(--success)' : 'var(--text-main)');
+            
             if (profit > 0) { card.classList.add('glow-success'); card.classList.remove('glow-danger'); }
             else if (profit < 0) { card.classList.add('glow-danger'); card.classList.remove('glow-success'); }
 
             bet1El.innerText = `₹${formatINR(bet1, 0)}`; bet1El.style.color = "var(--text-main)";
             bet2El.innerText = `₹${formatINR(bet2, 0)}`; bet2El.style.color = "var(--text-main)";
             
-            profitEl.innerText = `Profit: ₹${formatINR(profit, 2)} (${roi.toFixed(2)}%) Return ₹${formatINR(totalReturn, 0)}`;
+            profitLine.innerText = `Profit: ₹${formatINR(profit, 2)}`;
+            profitLine.style.color = dynamicColor;
             
-            if (roi < 0) profitEl.style.color = 'var(--danger)';
-            else if (roi >= 10) profitEl.style.color = 'var(--success)';
-            else if (roi >= 5) profitEl.style.color = 'var(--warning)'; 
-            else profitEl.style.color = 'var(--text-main)';
+            returnLine.innerText = `Return: ₹${formatINR(totalReturn, 0)}`;
+            returnLine.style.color = dynamicColor;
 
             if (shouldLog) {
                 let history = JSON.parse(localStorage.getItem('iplHistory') || '[]');
                 if (history.length > 0 && history[0].total === total && Math.round(history[0].bet1) === Math.round(bet1)) return;
-                saveToStorage({ total, bet1, bet2, profit, roi, totalReturn, date: new Date().toLocaleString() });
+                saveToStorage({ total, bet1, bet2, profit, totalReturn, date: new Date().toLocaleString() });
             }
         }
 
@@ -268,26 +267,14 @@
             if (history.length === 0) { section.style.visibility = 'hidden'; return; }
             section.style.visibility = 'visible';
             list.innerHTML = history.map(item => {
-                let rColor = item.roi < 0 ? 'var(--danger)' : (item.roi >= 10 ? 'var(--success)' : (item.roi >= 5 ? 'var(--warning)' : 'var(--text-main)'));
+                let pColor = item.profit < 0 ? 'var(--danger)' : (item.profit > 0 ? 'var(--success)' : 'var(--text-main)');
                 return `<div class="history-item"><div class="hist-grid">` +
                         `<span class="hist-label">Invested:</span><span class="hist-val">₹${formatINR(item.total, 0)}</span>` +
-                        `<span class="hist-label">Payout:</span><span class="hist-val" style="color:var(--accent)">₹${formatINR(item.totalReturn, 0)}</span>` +
-                        `<span class="hist-label">Net Profit:</span><span class="hist-val" style="color:${rColor}">₹${formatINR(item.profit, 2)} (${item.roi.toFixed(1)}%)</span>` +
+                        `<span class="hist-label">Return:</span><span class="hist-val" style="color:${pColor}">₹${formatINR(item.totalReturn, 0)}</span>` +
+                        `<span class="hist-label">Net Profit:</span><span class="hist-val" style="color:${pColor}">₹${formatINR(item.profit, 2)}</span>` +
                         `<span class="hist-label">Splits:</span><span class="hist-val">₹${formatINR(item.bet1, 0)} | ₹${formatINR(item.bet2, 0)}</span>` +
                         `</div></div>`
             }).join('');
-        }
-
-        function exportToCSV() {
-            const history = JSON.parse(localStorage.getItem('iplHistory') || '[]');
-            if (history.length === 0) return alert("No data to export!");
-            let csv = "Date,Invested,Return,Profit,ROI%\n";
-            history.forEach(i => csv += `${i.date},${i.total},${i.totalReturn.toFixed(0)},${i.profit.toFixed(2)},${i.roi.toFixed(2)}\n`);
-            const blob = new Blob([csv], { type: 'text/csv' });
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.setAttribute('href', url); a.setAttribute('download', 'IPL_Report.csv');
-            a.click();
         }
 
         function clearHistory() { if(confirm("Wipe all logs?")) { localStorage.removeItem('iplHistory'); location.reload(); } }
