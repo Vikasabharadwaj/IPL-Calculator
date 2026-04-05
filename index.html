@@ -3,67 +3,144 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IPL Pro Hub // Vikas Edition</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+    <title>IPL Pro Hub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg: #0f172a; --card: #1e293b; --text: #f8fafc; --dim: #94a3b8;
-            --accent: #facc15; --win: #10b981; --loss: #ef4444; --in: #334155;
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --text-main: #f8fafc;
+            --text-dim: #94a3b8;
+            --accent: #facc15; 
+            --success: #10b981;
+            --danger: #ef4444;
+            --input-bg: #334155;
+            --border-radius: 12px;
         }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
-        body { background: var(--bg); color: var(--text); min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 5px; }
 
-        .main-layout { display: grid; grid-template-columns: minmax(150px, 1fr) 360px minmax(150px, 1fr); width: 100%; max-width: 1300px; gap: 10px; align-items: start; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .main-layout {
+            display: grid;
+            grid-template-columns: 1fr 460px 1fr;
+            width: 100%;
+            max-width: 1600px;
+            gap: 25px;
+            align-items: start;
+        }
 
         .calc-card {
-            background: var(--card); padding: 0.8rem 1rem; border-radius: 12px;
-            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.05);
-            transition: 0.3s ease; position: relative;
+            background: var(--card-bg);
+            padding: 1.5rem 2rem;
+            border-radius: var(--border-radius);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.4);
+            border: 2px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease; /* Smooth glow transition */
         }
 
-        /* --- GLOW LOGIC --- */
-        .glow-win { border-color: var(--win) !important; box-shadow: 0 0 15px rgba(16, 185, 129, 0.4); }
-        .glow-loss { border-color: var(--loss) !important; box-shadow: 0 0 15px rgba(239, 68, 68, 0.4); }
+        /* --- RESTORED GLOW CLASSES --- */
+        .glow-success { border-color: var(--success) !important; box-shadow: 0 0 20px rgba(16, 185, 129, 0.3); }
+        .glow-danger { border-color: var(--danger) !important; box-shadow: 0 0 20px rgba(239, 68, 68, 0.3); }
 
-        .mode-selector { display: grid; grid-template-columns: repeat(4, 1fr); background: var(--in); padding: 2px; border-radius: 8px; margin-bottom: 0.6rem; }
-        .mode-btn { padding: 5px 2px; border-radius: 6px; border: none; background: transparent; color: var(--dim); font-weight: 600; font-size: 0.55rem; cursor: pointer; text-transform: uppercase; }
-        .mode-btn.active { background: var(--card); color: var(--accent); }
+        .mode-selector {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            background: var(--input-bg);
+            padding: 4px;
+            border-radius: 10px;
+            margin-bottom: 1.5rem;
+        }
 
-        header h1 { font-size: 0.9rem; font-weight: 800; color: var(--accent); text-align: center; margin-bottom: 0.5rem; text-transform: uppercase; }
+        .mode-btn {
+            padding: 10px 2px;
+            border-radius: 8px;
+            border: none;
+            background: transparent;
+            color: var(--text-dim);
+            font-weight: 700;
+            font-size: 0.65rem;
+            cursor: pointer;
+            text-transform: uppercase;
+        }
 
-        .input-group { margin-bottom: 0.4rem; }
-        label { display: block; font-size: 0.55rem; font-weight: 600; margin-bottom: 2px; color: var(--dim); text-transform: uppercase; }
-        input { width: 100%; padding: 0.4rem 0.6rem; background: var(--in); border: 1px solid transparent; border-radius: 6px; color: white; font-size: 0.8rem; outline: none; }
-        input:focus { border-color: var(--accent); }
+        .mode-btn.active {
+            background: var(--card-bg);
+            color: var(--accent);
+        }
 
-        .button-row { display: grid; grid-template-columns: 2fr 1fr; gap: 6px; margin-top: 0.6rem; }
-        button { padding: 0.5rem; border-radius: 6px; border: none; font-weight: 800; cursor: pointer; text-transform: uppercase; font-size: 0.65rem; }
-        .btn-p { background: var(--accent); color: #000; }
-        .btn-s { background: transparent; color: var(--dim); border: 1px solid var(--in); }
+        header h1 { font-size: 1.4rem; font-weight: 800; color: var(--accent); text-align: center; margin-bottom: 1.2rem; text-transform: uppercase; }
 
-        #results { margin-top: 0.8rem; padding-top: 0.8rem; border-top: 1px solid var(--in); }
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 6px; margin-bottom: 0.6rem; }
-        .stat-card { background: rgba(255,255,255,0.02); padding: 6px; border-radius: 8px; text-align: center; }
-        .stat-label { font-size: 0.45rem; color: var(--dim); text-transform: uppercase; display: block; }
-        .stat-val { font-size: 0.8rem; font-weight: 800; }
+        .input-group { margin-bottom: 0.8rem; }
+        label { display: block; font-size: 0.75rem; font-weight: 600; margin-bottom: 0.4rem; color: var(--text-dim); }
+        
+        input {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            background: var(--input-bg);
+            border: 2px solid transparent;
+            border-radius: 8px;
+            color: white;
+            font-size: 0.95rem;
+        }
 
-        .profit-box { padding: 0.5rem; border-radius: 8px; text-align: center; background: rgba(255,255,255,0.02); display: flex; flex-direction: column; gap: 3px; }
-        .res-line { font-size: 0.75rem; font-weight: 800; }
-        .divi { height: 1px; background: rgba(255,255,255,0.05); width: 30%; margin: 2px auto; }
-        .res-row { display: flex; justify-content: space-between; gap: 5px; }
+        input:focus { outline: none; border-color: var(--accent); }
 
-        .history-panel { background: var(--card); padding: 0.6rem; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); max-height: 75vh; overflow: hidden; visibility: hidden; }
-        .history-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem; border-bottom: 1px solid var(--in); padding-bottom: 3px; }
-        .h-head { font-size: 0.55rem; font-weight: 800; color: var(--accent); text-transform: uppercase; }
-        .clear { font-size: 0.5rem; color: var(--loss); cursor: pointer; background: none; border: none; font-weight: 800; text-transform: uppercase; }
-        .h-list { overflow-y: auto; height: 100%; }
-        .h-item { background: rgba(255,255,255,0.02); padding: 0.4rem; border-radius: 6px; margin-bottom: 0.4rem; border-left: 3px solid var(--accent); font-size: 0.6rem; }
-        .h-grid { display: grid; grid-template-columns: 1fr 1fr; }
+        .button-row { display: grid; grid-template-columns: 2fr 1fr; gap: 10px; margin-top: 1rem; }
+        button { padding: 0.75rem; border-radius: 8px; border: none; font-weight: 700; cursor: pointer; text-transform: uppercase; font-size: 0.8rem; }
+        .btn-primary { background: var(--accent); color: #000; }
+        .btn-secondary { background: transparent; color: var(--text-dim); border: 1px solid var(--input-bg); }
 
-        @media (max-width: 1000px) {
-            body { overflow-y: auto; align-items: flex-start; }
+        #results { margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--input-bg); }
+
+        .stats-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); 
+            gap: 10px; 
+            margin-bottom: 1rem; 
+            justify-content: center;
+        }
+        
+        .stat-card { background: rgba(255,255,255,0.03); padding: 12px; border-radius: 8px; text-align: center; }
+        .stat-label { font-size: 0.6rem; color: var(--text-dim); text-transform: uppercase; margin-bottom: 4px; display: block; }
+        .stat-val { font-size: 0.95rem; font-weight: 800; color: var(--text-main); }
+
+        .profit-box {
+            padding: 1.2rem;
+            border-radius: 10px;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.03);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .result-line { font-size: 1rem; font-weight: 800; }
+        .divider { height: 1px; background: rgba(255, 255, 255, 0.08); width: 40%; margin: 5px auto; }
+        .result-row { display: flex; justify-content: space-between; align-items: center; width: 100%; gap: 5px; }
+
+        .history-panel { background: var(--card-bg); padding: 1.2rem; border-radius: var(--border-radius); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.05); max-height: 85vh; display: flex; flex-direction: column; visibility: hidden; }
+        .history-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; border-bottom: 1px solid var(--input-bg); padding-bottom: 8px; }
+        .history-header { font-size: 0.7rem; font-weight: 700; color: var(--accent); text-transform: uppercase; }
+        .clear-btn { font-size: 0.65rem; color: var(--danger); cursor: pointer; background: none; border: none; font-weight: 700; text-transform: uppercase; }
+        .history-list { overflow-y: auto; flex: 1; padding-right: 5px; }
+        .history-item { background: rgba(255, 255, 255, 0.03); padding: 0.8rem; border-radius: 10px; margin-bottom: 0.8rem; border-left: 4px solid var(--accent); font-size: 0.75rem; }
+        .hist-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; }
+        .hist-label { color: var(--text-dim); }
+        .hist-val { font-weight: 700; text-align: right; }
+
+        @media (max-width: 1200px) {
             .main-layout { display: flex; flex-direction: column; align-items: center; }
-            .history-panel { width: 360px; max-height: 300px; }
+            .history-panel { width: 100%; max-width: 460px; }
         }
     </style>
 </head>
@@ -71,403 +148,211 @@
 
     <div class="main-layout">
         <div class="history-panel" id="invest-panel">
-            <div class="history-top"><span class="h-head">Invest Logs</span><button class="clear" onclick="clr('i')">Wipe</button></div>
-            <div class="h-list" id="invest-list"></div>
+            <div class="history-top"><span class="history-header">Investment History</span><button class="clear-btn" onclick="clearData('invest')">Wipe</button></div>
+            <div class="history-list" id="invest-list"></div>
         </div>
 
         <div class="calc-card" id="main-card">
             <header><h1>IPL Pro Hub</h1></header>
+
             <div class="mode-selector">
-                <button id="m-i" class="mode-btn active" onclick="st('invest')">Split</button>
-                <button id="m-p" class="mode-btn" onclick="st('profit')">Target</button>
-                <button id="m-h" class="mode-btn" onclick="st('hedge')">Hedge</button>
-                <button id="m-t" class="mode-btn" onclick="st('triple')">3-Way</button>
+                <button id="mode-invest" class="mode-btn active" onclick="setMode('invest')">Split</button>
+                <button id="mode-profit" class="mode-btn" onclick="setMode('profit')">Target</button>
+                <button id="mode-hedge" class="mode-btn" onclick="setMode('hedge')">Hedge</button>
+                <button id="mode-triple" class="mode-btn" onclick="setMode('triple')">3-Way</button>
             </div>
 
-            <div class="input-group"><label id="l-main">Budget (₹)</label><input type="text" id="v-main" placeholder="0" oninput="fmt(this)"></div>
-            <div class="input-group"><label id="l-o1">T1 Odds</label><input type="number" id="v-o1" step="0.01" placeholder="0.00"></div>
-            <div class="input-group"><label id="l-o2">T2 Odds</label><input type="number" id="v-o2" step="0.01" placeholder="0.00"></div>
-            <div id="g-o3" class="input-group" style="display:none;"><label>Draw Odds</label><input type="number" id="v-o3" step="0.01" placeholder="0.00"></div>
+            <div class="input-group">
+                <label id="input-label">Total Budget (₹)</label>
+                <input type="text" id="mainInput" placeholder="0" oninput="formatInput(this)">
+            </div>
+            <div class="input-group">
+                <label id="o1-label">Team 1 Odds</label>
+                <input type="number" id="odd1" step="0.01" placeholder="0.00">
+            </div>
+            <div class="input-group">
+                <label id="o2-label">Team 2 Odds</label>
+                <input type="number" id="odd2" step="0.01" placeholder="0.00">
+            </div>
+            <div id="o3-group" class="input-group" style="display:none;">
+                <label>Draw/Neither Odds</label>
+                <input type="number" id="odd3" step="0.01" placeholder="0.00">
+            </div>
 
             <div class="button-row">
-                <button id="log-btn" class="btn-p" onclick="rn(true)">Log</button>
-                <button class="btn-s" onclick="rst()">Reset</button>
+                <button id="log-btn" class="btn-primary" onclick="run(true)">Log Record</button>
+                <button class="btn-secondary" onclick="resetForm()">Reset</button>
             </div>
 
             <div id="results">
                 <div class="stats-grid">
-                    <div id="c-t1" class="stat-card"><span class="stat-label">Bet T1</span><div class="stat-val" id="r-b1">₹0</div></div>
-                    <div id="c-t2" class="stat-card"><span class="stat-label" id="l-b2">Bet T2</span><div class="stat-val" id="r-b2">₹0</div></div>
-                    <div id="c-t3" class="stat-card" style="display:none;"><span class="stat-label">Bet T3</span><div class="stat-val" id="r-b3">₹0</div></div>
+                    <div id="card-t1" class="stat-card">
+                        <span class="stat-label" id="bet1-l">Bet Team 1</span>
+                        <div class="stat-val" id="res-bet1">₹0</div>
+                    </div>
+                    <div id="card-t2" class="stat-card">
+                        <span class="stat-label" id="bet2-l">Bet Team 2</span>
+                        <div class="stat-val" id="res-bet2">₹0</div>
+                    </div>
+                    <div id="res-bet3-card" class="stat-card" style="display:none;">
+                        <span class="stat-label">Bet Team 3</span>
+                        <div class="stat-val" id="res-bet3">₹0</div>
+                    </div>
                 </div>
+
                 <div class="profit-box">
-                    <div id="r-inv" class="res-line" style="color:var(--dim)">Inv: ₹0</div>
-                    <div class="divi"></div>
-                    <div class="res-row">
-                        <div id="r-ret" class="res-line" style="color:var(--accent)">Ret: ₹0</div>
-                        <div id="r-prf" class="res-line">Prof: ₹0</div>
+                    <div id="res-invest" class="result-line" style="color: var(--text-dim);">Invested: ₹0</div>
+                    <div class="divider"></div>
+                    <div class="result-row">
+                        <div id="res-return" class="result-line" style="color: var(--accent);">Return: ₹0</div>
+                        <div id="res-profit" class="result-line">Net Profit: ₹0</div>
                     </div>
                 </div>
             </div>
         </div>
 
         <div class="history-panel" id="profit-panel">
-            <div class="history-top"><span class="h-head">Target Logs</span><button class="clear" onclick="clr('p')">Wipe</button></div>
-            <div class="h-list" id="profit-list"></div>
+            <div class="history-top"><span class="history-header">Target Profit History</span><button class="clear-btn" onclick="clearData('profit')">Wipe</button></div>
+            <div class="history-list" id="profit-list"></div>
         </div>
     </div>
 
     <script>
         let mode = 'invest';
-        const f = (n, d = 0) => new Intl.NumberFormat('en-IN', { minimumFractionDigits: d, maximumFractionDigits: d }).format(n);
+        const formatINR = (n, d = 2) => new Intl.NumberFormat('en-IN', { minimumFractionDigits: d, maximumFractionDigits: d }).format(n);
 
-        function st(m) {
+        function setMode(m) {
             mode = m;
-            document.querySelectorAll('.mode-btn').forEach(b => b.classList.toggle('active', b.id.includes(m[0])));
-            document.getElementById('c-t1').style.display = m === 'hedge' ? 'none' : 'block';
-            document.getElementById('g-o3').style.display = m === 'triple' ? 'block' : 'none';
-            document.getElementById('c-t3').style.display = m === 'triple' ? 'block' : 'none';
+            document.querySelectorAll('.mode-btn').forEach(b => b.classList.toggle('active', b.id.includes(mode)));
             
-            const lbs = {
-                invest: { m: 'Budget (₹)', o1: 'T1 Odds', o2: 'T2 Odds', b2: 'Bet T2' },
-                profit: { m: 'Target (₹)', o1: 'T1 Odds', o2: 'T2 Odds', b2: 'Bet T2' },
-                hedge: { m: 'Spent on T1 (₹)', o1: 'T1 Odds', o2: 'T2 Odds', b2: 'New Bet T2' },
-                triple: { m: 'Budget (₹)', o1: 'T1 Odds', o2: 'T2 Odds', b2: 'Bet T2' }
+            const isHedge = mode === 'hedge';
+            const isTriple = mode === 'triple';
+
+            document.getElementById('card-t1').style.display = isHedge ? 'none' : 'block';
+            document.getElementById('o3-group').style.display = isTriple ? 'block' : 'none';
+            document.getElementById('res-bet3-card').style.display = isTriple ? 'block' : 'none';
+
+            const labels = {
+                invest: { main: 'Total Budget (₹)', o1: 'Team 1 Odds', o2: 'Team 2 Odds', b1: 'Bet Team 1', b2: 'Bet Team 2' },
+                profit: { main: 'Target Profit (₹)', o1: 'Team 1 Odds', o2: 'Team 2 Odds', b1: 'Bet Team 1', b2: 'Bet Team 2' },
+                hedge: { main: 'Spent on T1 (₹)', o1: 'T1 Odds (Original)', o2: 'T2 Odds (Hedge)', b1: '-', b2: 'New Bet on T2' },
+                triple: { main: 'Total Budget (₹)', o1: 'Team 1 Odds', o2: 'Team 2 Odds', b1: 'Bet Team 1', b2: 'Bet Team 2' }
             };
-            document.getElementById('l-main').innerText = lbs[m].m;
-            document.getElementById('l-b2').innerText = lbs[m].b2;
-            document.getElementById('log-btn').innerText = m === 'hedge' ? 'Calc' : 'Log';
-            rst();
+
+            document.getElementById('input-label').innerText = labels[mode].main;
+            document.getElementById('o1-label').innerText = labels[mode].o1;
+            document.getElementById('o2-label').innerText = labels[mode].o2;
+            document.getElementById('bet1-l').innerText = labels[mode].b1;
+            document.getElementById('bet2-l').innerText = labels[mode].b2;
+
+            document.getElementById('log-btn').innerText = isHedge ? 'Calc Only' : 'Log Record';
+            document.getElementById('log-btn').style.opacity = isHedge ? '0.6' : '1';
+
+            resetForm();
         }
 
-        const fmt = (el) => {
+        const formatInput = (el) => {
             let v = el.value.replace(/\D/g, "");
-            if (v === "") { el.value = ""; rn(); return; }
+            if (v === "") { el.value = ""; run(false); return; }
             el.value = new Intl.NumberFormat('en-IN').format(v);
-            rn();
+            run(false);
         };
 
-        function rn(log = false) {
-            const mVal = parseFloat(document.getElementById('v-main').value.replace(/,/g, ''));
-            const o1 = parseFloat(document.getElementById('v-o1').value);
-            const o2 = parseFloat(document.getElementById('v-o2').value);
-            const o3 = parseFloat(document.getElementById('v-o3').value);
+        function run(log = false) {
+            const mainV = parseFloat(document.getElementById('mainInput').value.replace(/,/g, ''));
+            const o1 = parseFloat(document.getElementById('odd1').value);
+            const o2 = parseFloat(document.getElementById('odd2').value);
+            const o3 = parseFloat(document.getElementById('odd3').value);
             const card = document.getElementById('main-card');
-            if (!mVal || !o2) { card.className = "calc-card"; return; }
+            
+            if (!mainV || !o2) { card.className = "calc-card"; return; }
 
             let d = {};
             if (mode === 'invest') {
                 if (!o1) return;
-                const b1 = (mVal * o2) / (o1 + o2), b2 = (mVal * o1) / (o1 + o2);
-                d = { b1, b2, i: mVal, r: b1*o1, p: (b1*o1)-mVal, t: 'Split' };
-            } else if (mode === 'profit') {
+                const b1 = (mainV * o2) / (o1 + o2);
+                const b2 = (mainV * o1) / (o1 + o2);
+                const p = (b1 * o1) - mainV;
+                d = { b1, b2, invest: mainV, ret: mainV + p, profit: p, tag: 'Split' };
+            } 
+            else if (mode === 'profit') {
                 if (!o1) return;
-                const arb = (1/o1) + (1/o2); if (arb >= 1) return;
-                const r = mVal / (1 - arb);
-                d = { b1: r/o1, b2: r/o2, i: (r/o1)+(r/o2), r, p: mVal, t: 'Target' };
-            } else if (mode === 'hedge') {
-                const b2 = mVal / (o2 - 1), i = mVal + b2;
-                d = { b1: 0, b2, i, r: b2 * o2, p: (b2 * o2) - i, t: 'Hedge' };
-            } else if (mode === 'triple') {
+                const arb = (1/o1) + (1/o2);
+                if (arb >= 1) return;
+                const ret = mainV / (1 - arb);
+                const b1 = ret/o1; const b2 = ret/o2;
+                d = { b1, b2, invest: b1 + b2, ret, profit: mainV, tag: 'Target' };
+            }
+            else if (mode === 'hedge') {
+                const b2 = mainV / (o2 - 1);
+                const inv = mainV + b2;
+                d = { b1: 0, b2, invest: inv, ret: b2 * o2, profit: (b2 * o2) - inv, tag: 'Hedge' };
+            }
+            else if (mode === 'triple') {
                 if (!o1 || !o3) return;
-                const s = (1/o1) + (1/o2) + (1/o3);
-                const b1 = (mVal * (1/o1)) / s, b2 = (mVal * (1/o2)) / s, b3 = (mVal * (1/o3)) / s;
-                d = { b1, b2, b3, i: mVal, r: b1*o1, p: (b1*o1)-mVal, t: '3-Way' };
+                const sum = (1/o1) + (1/o2) + (1/o3);
+                const b1 = (mainV * (1/o1)) / sum;
+                const b2 = (mainV * (1/o2)) / sum;
+                const b3 = (mainV * (1/o3)) / sum;
+                const p = (b1 * o1) - mainV;
+                d = { b1, b2, b3, invest: mainV, ret: mainV + p, profit: p, tag: '3-Way' };
             }
 
-            const win = mode === 'hedge' ? d.p >= -0.1 : d.p > 0;
-            card.className = `calc-card ${win ? 'glow-win' : 'glow-loss'}`;
+            // --- TRIGGER GLOW LOGIC ---
+            const isProfit = mode === 'hedge' ? d.profit >= -0.1 : d.profit > 0;
+            card.className = `calc-card ${isProfit ? 'glow-success' : 'glow-danger'}`;
 
-            document.getElementById('r-b1').innerText = `₹${f(d.b1)}`;
-            document.getElementById('r-b2').innerText = `₹${f(d.b2)}`;
-            if (mode === 'triple') document.getElementById('r-b3').innerText = `₹${f(d.b3)}`;
-            document.getElementById('r-inv').innerText = `Inv: ₹${f(d.i)}`;
-            document.getElementById('r-ret').innerText = `Ret: ₹${f(d.r)}`;
-            document.getElementById('r-prf').innerText = `Prof: ₹${f(d.p)}`;
-            document.getElementById('r-prf').style.color = win ? "var(--win)" : "var(--loss)";
-
-            if (log && mode !== 'hedge') save(d);
-        }
-
-        function save(d) {
-            const k = (d.t === 'Split' || d.t === '3-Way') ? 'vk_i' : 'vk_p';
-            let h = JSON.parse(localStorage.getItem(k) || '[]');
-            if (h.length > 0 && Math.round(h[0].i) === Math.round(d.i) && Math.round(h[0].p) === Math.round(d.p)) return;
-            h.unshift(d);
-            localStorage.setItem(k, JSON.stringify(h.slice(0, 10))); 
-            upd();
-        }
-
-        function upd() {
-            const iD = JSON.parse(localStorage.getItem('vk_i') || '[]');
-            document.getElementById('invest-panel').style.visibility = iD.length ? 'visible' : 'hidden';
-            document.getElementById('invest-list').innerHTML = iD.map(i => `<div class="h-item"><div class="h-grid"><span>Inv: ₹${f(i.i)}</span><span style="color:var(--win);text-align:right">P: ₹${f(i.p)}</span></div></div>`).join('');
-            const pD = JSON.parse(localStorage.getItem('vk_p') || '[]');
-            document.getElementById('profit-panel').style.visibility = pD.length ? 'visible' : 'hidden';
-            document.getElementById('profit-list').innerHTML = pD.map(i => `<div class="h-item" style="border-left-color:var(--win)"><div class="h-grid"><span>Goal: ₹${f(i.p)}</span><span style="text-align:right">Inv: ₹${f(i.i)}</span></div></div>`).join('');
-        }
-
-        function clr(t) { localStorage.removeItem(t === 'i' ? 'vk_i' : 'vk_p'); upd(); }
-        function rst() { 
-            ['v-main', 'v-o1', 'v-o2', 'v-o3'].forEach(id => document.getElementById(id).value = ''); 
-            document.getElementById('main-card').className = "calc-card";
-            rn();
-        }
-
-        // --- FIXED ENTER KEY NAVIGATION ---
-        const ids = ['v-main', 'v-o1', 'v-o2', 'v-o3'];
-        ids.forEach((id, index) => {
-            document.getElementById(id).addEventListener('keydown', e => {
-                if (e.key === 'Enter') {
-                    e.preventDefault();
-                    if (index < ids.length - 1) {
-                        const next = document.getElementById(ids[index + 1]);
-                        if (index === 2 && mode !== 'triple') { rn(true); } 
-                        else if (next.parentElement.style.display !== 'none') { next.focus(); }
-                        else { rn(true); }
-                    } else { rn(true); }
-                }
-            });
-        });
-
-        ['v-o1', 'v-o2', 'v-o3'].forEach(id => document.getElementById(id).addEventListener("input", () => rn()));
-        window<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IPL Pro Hub // Vikas Edition</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --bg: #0f172a; --card: #1e293b; --text: #f8fafc; --dim: #94a3b8;
-            --accent: #facc15; --win: #10b981; --loss: #ef4444; --in: #334155;
-        }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
-        body { background: var(--bg); color: var(--text); min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 5px; }
-
-        .main-layout { display: grid; grid-template-columns: minmax(150px, 1fr) 360px minmax(150px, 1fr); width: 100%; max-width: 1300px; gap: 10px; align-items: start; }
-
-        .calc-card {
-            background: var(--card); padding: 0.8rem 1rem; border-radius: 12px;
-            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.05);
-            transition: 0.3s ease; position: relative;
-        }
-
-        /* --- GLOW LOGIC --- */
-        .glow-win { border-color: var(--win) !important; box-shadow: 0 0 15px rgba(16, 185, 129, 0.4); }
-        .glow-loss { border-color: var(--loss) !important; box-shadow: 0 0 15px rgba(239, 68, 68, 0.4); }
-
-        .mode-selector { display: grid; grid-template-columns: repeat(4, 1fr); background: var(--in); padding: 2px; border-radius: 8px; margin-bottom: 0.6rem; }
-        .mode-btn { padding: 5px 2px; border-radius: 6px; border: none; background: transparent; color: var(--dim); font-weight: 600; font-size: 0.55rem; cursor: pointer; text-transform: uppercase; }
-        .mode-btn.active { background: var(--card); color: var(--accent); }
-
-        header h1 { font-size: 0.9rem; font-weight: 800; color: var(--accent); text-align: center; margin-bottom: 0.5rem; text-transform: uppercase; }
-
-        .input-group { margin-bottom: 0.4rem; }
-        label { display: block; font-size: 0.55rem; font-weight: 600; margin-bottom: 2px; color: var(--dim); text-transform: uppercase; }
-        input { width: 100%; padding: 0.4rem 0.6rem; background: var(--in); border: 1px solid transparent; border-radius: 6px; color: white; font-size: 0.8rem; outline: none; }
-        input:focus { border-color: var(--accent); }
-
-        .button-row { display: grid; grid-template-columns: 2fr 1fr; gap: 6px; margin-top: 0.6rem; }
-        button { padding: 0.5rem; border-radius: 6px; border: none; font-weight: 800; cursor: pointer; text-transform: uppercase; font-size: 0.65rem; }
-        .btn-p { background: var(--accent); color: #000; }
-        .btn-s { background: transparent; color: var(--dim); border: 1px solid var(--in); }
-
-        #results { margin-top: 0.8rem; padding-top: 0.8rem; border-top: 1px solid var(--in); }
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 6px; margin-bottom: 0.6rem; }
-        .stat-card { background: rgba(255,255,255,0.02); padding: 6px; border-radius: 8px; text-align: center; }
-        .stat-label { font-size: 0.45rem; color: var(--dim); text-transform: uppercase; display: block; }
-        .stat-val { font-size: 0.8rem; font-weight: 800; }
-
-        .profit-box { padding: 0.5rem; border-radius: 8px; text-align: center; background: rgba(255,255,255,0.02); display: flex; flex-direction: column; gap: 3px; }
-        .res-line { font-size: 0.75rem; font-weight: 800; }
-        .divi { height: 1px; background: rgba(255,255,255,0.05); width: 30%; margin: 2px auto; }
-        .res-row { display: flex; justify-content: space-between; gap: 5px; }
-
-        .history-panel { background: var(--card); padding: 0.6rem; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); max-height: 75vh; overflow: hidden; visibility: hidden; }
-        .history-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem; border-bottom: 1px solid var(--in); padding-bottom: 3px; }
-        .h-head { font-size: 0.55rem; font-weight: 800; color: var(--accent); text-transform: uppercase; }
-        .clear { font-size: 0.5rem; color: var(--loss); cursor: pointer; background: none; border: none; font-weight: 800; text-transform: uppercase; }
-        .h-list { overflow-y: auto; height: 100%; }
-        .h-item { background: rgba(255,255,255,0.02); padding: 0.4rem; border-radius: 6px; margin-bottom: 0.4rem; border-left: 3px solid var(--accent); font-size: 0.6rem; }
-        .h-grid { display: grid; grid-template-columns: 1fr 1fr; }
-
-        @media (max-width: 1000px) {
-            body { overflow-y: auto; align-items: flex-start; }
-            .main-layout { display: flex; flex-direction: column; align-items: center; }
-            .history-panel { width: 360px; max-height: 300px; }
-        }
-    </style>
-</head>
-<body>
-
-    <div class="main-layout">
-        <div class="history-panel" id="invest-panel">
-            <div class="history-top"><span class="h-head">Invest Logs</span><button class="clear" onclick="clr('i')">Wipe</button></div>
-            <div class="h-list" id="invest-list"></div>
-        </div>
-
-        <div class="calc-card" id="main-card">
-            <header><h1>IPL Pro Hub</h1></header>
-            <div class="mode-selector">
-                <button id="m-i" class="mode-btn active" onclick="st('invest')">Split</button>
-                <button id="m-p" class="mode-btn" onclick="st('profit')">Target</button>
-                <button id="m-h" class="mode-btn" onclick="st('hedge')">Hedge</button>
-                <button id="m-t" class="mode-btn" onclick="st('triple')">3-Way</button>
-            </div>
-
-            <div class="input-group"><label id="l-main">Budget (₹)</label><input type="text" id="v-main" placeholder="0" oninput="fmt(this)"></div>
-            <div class="input-group"><label id="l-o1">T1 Odds</label><input type="number" id="v-o1" step="0.01" placeholder="0.00"></div>
-            <div class="input-group"><label id="l-o2">T2 Odds</label><input type="number" id="v-o2" step="0.01" placeholder="0.00"></div>
-            <div id="g-o3" class="input-group" style="display:none;"><label>Draw Odds</label><input type="number" id="v-o3" step="0.01" placeholder="0.00"></div>
-
-            <div class="button-row">
-                <button id="log-btn" class="btn-p" onclick="rn(true)">Log</button>
-                <button class="btn-s" onclick="rst()">Reset</button>
-            </div>
-
-            <div id="results">
-                <div class="stats-grid">
-                    <div id="c-t1" class="stat-card"><span class="stat-label">Bet T1</span><div class="stat-val" id="r-b1">₹0</div></div>
-                    <div id="c-t2" class="stat-card"><span class="stat-label" id="l-b2">Bet T2</span><div class="stat-val" id="r-b2">₹0</div></div>
-                    <div id="c-t3" class="stat-card" style="display:none;"><span class="stat-label">Bet T3</span><div class="stat-val" id="r-b3">₹0</div></div>
-                </div>
-                <div class="profit-box">
-                    <div id="r-inv" class="res-line" style="color:var(--dim)">Inv: ₹0</div>
-                    <div class="divi"></div>
-                    <div class="res-row">
-                        <div id="r-ret" class="res-line" style="color:var(--accent)">Ret: ₹0</div>
-                        <div id="r-prf" class="res-line">Prof: ₹0</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="history-panel" id="profit-panel">
-            <div class="history-top"><span class="h-head">Target Logs</span><button class="clear" onclick="clr('p')">Wipe</button></div>
-            <div class="h-list" id="profit-list"></div>
-        </div>
-    </div>
-
-    <script>
-        let mode = 'invest';
-        const f = (n, d = 0) => new Intl.NumberFormat('en-IN', { minimumFractionDigits: d, maximumFractionDigits: d }).format(n);
-
-        function st(m) {
-            mode = m;
-            document.querySelectorAll('.mode-btn').forEach(b => b.classList.toggle('active', b.id.includes(m[0])));
-            document.getElementById('c-t1').style.display = m === 'hedge' ? 'none' : 'block';
-            document.getElementById('g-o3').style.display = m === 'triple' ? 'block' : 'none';
-            document.getElementById('c-t3').style.display = m === 'triple' ? 'block' : 'none';
+            document.getElementById('res-bet1').innerText = `₹${formatINR(d.b1, 0)}`;
+            document.getElementById('res-bet2').innerText = `₹${formatINR(d.b2, 0)}`;
+            if (mode === 'triple') document.getElementById('res-bet3').innerText = `₹${formatINR(d.b3, 0)}`;
             
-            const lbs = {
-                invest: { m: 'Budget (₹)', o1: 'T1 Odds', o2: 'T2 Odds', b2: 'Bet T2' },
-                profit: { m: 'Target (₹)', o1: 'T1 Odds', o2: 'T2 Odds', b2: 'Bet T2' },
-                hedge: { m: 'Spent on T1 (₹)', o1: 'T1 Odds', o2: 'T2 Odds', b2: 'New Bet T2' },
-                triple: { m: 'Budget (₹)', o1: 'T1 Odds', o2: 'T2 Odds', b2: 'Bet T2' }
-            };
-            document.getElementById('l-main').innerText = lbs[m].m;
-            document.getElementById('l-b2').innerText = lbs[m].b2;
-            document.getElementById('log-btn').innerText = m === 'hedge' ? 'Calc' : 'Log';
-            rst();
+            document.getElementById('res-invest').innerText = `Invested: ₹${formatINR(d.invest, 2)}`;
+            document.getElementById('res-return').innerText = `Return: ₹${formatINR(d.ret, 0)}`;
+            document.getElementById('res-profit').innerText = `${mode==='hedge'?'Net Recovery:':'Net Profit:'} ₹${formatINR(d.profit, 2)}`;
+            document.getElementById('res-profit').style.color = isProfit ? "var(--success)" : "var(--danger)";
+
+            if (log && mode !== 'hedge') logData(d);
         }
 
-        const fmt = (el) => {
-            let v = el.value.replace(/\D/g, "");
-            if (v === "") { el.value = ""; rn(); return; }
-            el.value = new Intl.NumberFormat('en-IN').format(v);
-            rn();
-        };
-
-        function rn(log = false) {
-            const mVal = parseFloat(document.getElementById('v-main').value.replace(/,/g, ''));
-            const o1 = parseFloat(document.getElementById('v-o1').value);
-            const o2 = parseFloat(document.getElementById('v-o2').value);
-            const o3 = parseFloat(document.getElementById('v-o3').value);
-            const card = document.getElementById('main-card');
-            if (!mVal || !o2) { card.className = "calc-card"; return; }
-
-            let d = {};
-            if (mode === 'invest') {
-                if (!o1) return;
-                const b1 = (mVal * o2) / (o1 + o2), b2 = (mVal * o1) / (o1 + o2);
-                d = { b1, b2, i: mVal, r: b1*o1, p: (b1*o1)-mVal, t: 'Split' };
-            } else if (mode === 'profit') {
-                if (!o1) return;
-                const arb = (1/o1) + (1/o2); if (arb >= 1) return;
-                const r = mVal / (1 - arb);
-                d = { b1: r/o1, b2: r/o2, i: (r/o1)+(r/o2), r, p: mVal, t: 'Target' };
-            } else if (mode === 'hedge') {
-                const b2 = mVal / (o2 - 1), i = mVal + b2;
-                d = { b1: 0, b2, i, r: b2 * o2, p: (b2 * o2) - i, t: 'Hedge' };
-            } else if (mode === 'triple') {
-                if (!o1 || !o3) return;
-                const s = (1/o1) + (1/o2) + (1/o3);
-                const b1 = (mVal * (1/o1)) / s, b2 = (mVal * (1/o2)) / s, b3 = (mVal * (1/o3)) / s;
-                d = { b1, b2, b3, i: mVal, r: b1*o1, p: (b1*o1)-mVal, t: '3-Way' };
-            }
-
-            const win = mode === 'hedge' ? d.p >= -0.1 : d.p > 0;
-            card.className = `calc-card ${win ? 'glow-win' : 'glow-loss'}`;
-
-            document.getElementById('r-b1').innerText = `₹${f(d.b1)}`;
-            document.getElementById('r-b2').innerText = `₹${f(d.b2)}`;
-            if (mode === 'triple') document.getElementById('r-b3').innerText = `₹${f(d.b3)}`;
-            document.getElementById('r-inv').innerText = `Inv: ₹${f(d.i)}`;
-            document.getElementById('r-ret').innerText = `Ret: ₹${f(d.r)}`;
-            document.getElementById('r-prf').innerText = `Prof: ₹${f(d.p)}`;
-            document.getElementById('r-prf').style.color = win ? "var(--win)" : "var(--loss)";
-
-            if (log && mode !== 'hedge') save(d);
-        }
-
-        function save(d) {
-            const k = (d.t === 'Split' || d.t === '3-Way') ? 'vk_i' : 'vk_p';
+        function logData(d) {
+            const k = (d.tag === 'Split' || d.tag === '3-Way') ? 'v_h_hub_inv_final' : 'v_h_hub_prof_final';
             let h = JSON.parse(localStorage.getItem(k) || '[]');
-            if (h.length > 0 && Math.round(h[0].i) === Math.round(d.i) && Math.round(h[0].p) === Math.round(d.p)) return;
+            if (h.length > 0 && Math.round(h[0].invest) === Math.round(d.invest) && Math.round(h[0].profit) === Math.round(d.profit)) return;
             h.unshift(d);
             localStorage.setItem(k, JSON.stringify(h.slice(0, 10))); 
-            upd();
+            update();
         }
 
-        function upd() {
-            const iD = JSON.parse(localStorage.getItem('vk_i') || '[]');
+        function update() {
+            const iD = JSON.parse(localStorage.getItem('v_h_hub_inv_final') || '[]');
             document.getElementById('invest-panel').style.visibility = iD.length ? 'visible' : 'hidden';
-            document.getElementById('invest-list').innerHTML = iD.map(i => `<div class="h-item"><div class="h-grid"><span>Inv: ₹${f(i.i)}</span><span style="color:var(--win);text-align:right">P: ₹${f(i.p)}</span></div></div>`).join('');
-            const pD = JSON.parse(localStorage.getItem('vk_p') || '[]');
+            document.getElementById('invest-list').innerHTML = iD.map(i => {
+                const s = i.tag === '3-Way' ? `₹${formatINR(i.b1, 0)} | ₹${formatINR(i.b2, 0)} | ₹${formatINR(i.b3, 0)}` : `₹${formatINR(i.b1, 0)} | ₹${formatINR(i.b2, 0)}`;
+                return `<div class="history-item"><div style="font-size:0.5rem; color:var(--accent); text-transform:uppercase; margin-bottom:5px;">${i.tag} Mode</div><div class="hist-grid"><span class="hist-label">Invested:</span><span class="hist-val">₹${formatINR(i.invest, 0)}</span><span class="hist-label">Return:</span><span class="hist-val">₹${formatINR(i.ret, 0)}</span><span class="hist-label">Net Profit:</span><span class="hist-val" style="color:var(--success)">₹${formatINR(i.profit, 2)}</span><span class="hist-label">Split:</span><span class="hist-val">${s}</span></div></div>`;
+            }).join('');
+
+            const pD = JSON.parse(localStorage.getItem('v_h_hub_prof_final') || '[]');
             document.getElementById('profit-panel').style.visibility = pD.length ? 'visible' : 'hidden';
-            document.getElementById('profit-list').innerHTML = pD.map(i => `<div class="h-item" style="border-left-color:var(--win)"><div class="h-grid"><span>Goal: ₹${f(i.p)}</span><span style="text-align:right">Inv: ₹${f(i.i)}</span></div></div>`).join('');
+            document.getElementById('profit-list').innerHTML = pD.map(i => `<div class="history-item" style="border-left-color: var(--success)"><div style="font-size:0.5rem; color:var(--text-dim); text-transform:uppercase; margin-bottom:5px;">Target Mode</div><div class="hist-grid"><span class="hist-label">Invested:</span><span class="hist-val">₹${formatINR(i.invest, 0)}</span><span class="hist-label">Return:</span><span class="hist-val">₹${formatINR(i.ret, 0)}</span><span class="hist-label">Net Profit:</span><span class="hist-val" style="color:var(--success)">₹${formatINR(i.profit, 2)}</span><span class="hist-label">Split:</span><span class="hist-val">₹${formatINR(i.b1, 0)} | ₹${formatINR(i.b2, 0)}</span></div></div>`).join('');
         }
 
-        function clr(t) { localStorage.removeItem(t === 'i' ? 'vk_i' : 'vk_p'); upd(); }
-        function rst() { 
-            ['v-main', 'v-o1', 'v-o2', 'v-o3'].forEach(id => document.getElementById(id).value = ''); 
-            document.getElementById('main-card').className = "calc-card";
-            rn();
+        function clearData(t) { localStorage.removeItem(t === 'invest' ? 'v_h_hub_inv_final' : 'v_h_hub_prof_final'); update(); }
+        function resetForm() { 
+            ['mainInput', 'odd1', 'odd2', 'odd3'].forEach(id => document.getElementById(id).value = ''); 
+            ['res-bet1', 'res-bet2', 'res-bet3'].forEach(id => document.getElementById(id).innerText = "₹0"); 
+            document.getElementById('res-invest').innerText = "Invested: ₹0"; 
+            document.getElementById('res-return').innerText = "Return: ₹0"; 
+            document.getElementById('res-profit').innerText = "Net Profit: ₹0";
+            document.getElementById('main-card').className = "calc-card"; // Reset Glow
         }
-
-        // --- FIXED ENTER KEY NAVIGATION ---
-        const ids = ['v-main', 'v-o1', 'v-o2', 'v-o3'];
-        ids.forEach((id, index) => {
-            document.getElementById(id).addEventListener('keydown', e => {
-                if (e.key === 'Enter') {
-                    e.preventDefault();
-                    if (index < ids.length - 1) {
-                        const next = document.getElementById(ids[index + 1]);
-                        if (index === 2 && mode !== 'triple') { rn(true); } 
-                        else if (next.parentElement.style.display !== 'none') { next.focus(); }
-                        else { rn(true); }
-                    } else { rn(true); }
-                }
-            });
-        });
-
-        ['v-o1', 'v-o2', 'v-o3'].forEach(id => document.getElementById(id).addEventListener("input", () => rn()));
-        window.onload = upd;
-    </script>
-</body>
-</html>.onload = upd;
+        
+        document.getElementById('mainInput').addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('odd1').focus(); });
+        document.getElementById('odd1').addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('odd2').focus(); });
+        document.getElementById('odd2').addEventListener('keydown', e => { if (e.key === 'Enter') (mode === 'triple' ? document.getElementById('odd3').focus() : run(true)); });
+        document.getElementById('odd3').addEventListener('keydown', e => { if (e.key === 'Enter') run(true); });
+        
+        ['odd1', 'odd2', 'odd3'].forEach(id => document.getElementById(id).addEventListener("input", () => run(false)));
+        window.onload = update;
     </script>
 </body>
 </html>
